@@ -1,0 +1,47 @@
+.data
+num1: .word 
+mum2: .word
+
+adi:  .asciiz "\nAdição(A)"		
+sub:  .asciiz "\nSubração(S)"
+div:  .asciiz "\nDivisão(D)"
+mul:  .asciiz "\nMultiplicação(M)"
+pot:  .asciiz "\nPotenciação(P)"
+
+mgs: .asciiz "\nDigite uma das siglas para escolher a operação"
+
+
+
+.text
+.globl main
+
+main:
+	#Mostra os valores para escolha
+	la $a0, adi
+	li $v0, 4
+	syscall
+	
+	la $a0, sub
+	li $v0, 4
+	syscall
+	
+	la $a0, div
+	li $v0, 4
+	syscall
+	
+	la $a0, mul
+	li $v0, 4
+	syscall
+	
+	la $a0, pot
+	li $v0, 4
+	syscall
+	
+	la  $a0, msg
+	li $v0, 4
+	syscall
+	
+	
+	li $v0, 10
+	syscall
+	
