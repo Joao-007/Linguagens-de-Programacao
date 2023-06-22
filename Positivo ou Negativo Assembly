@@ -1,0 +1,62 @@
+.data
+	msg: .asciiz "Digite um número: "
+	print_p: .asciiz "Esse número é positivo: "
+	print_n: .asciiz "Esse número é negativo: "
+	print_z: .asciiz "Esse número é o zero: "
+	
+.text
+.globl main
+
+main:
+	li $v0, 4
+	la $a0, msg # Exibe o input de comando
+	syscall
+	
+	li $v0, 5 # Lê o número digitado pelo input
+	syscall
+	
+	move $t0, $v0 # Armazena o número de $v0 em $t0
+	
+	bltz $t0, negativo
+	beqz $t0, zero
+	
+	j positivo
+	
+positivo:
+	li $v0, 4
+	la $a0, print_p
+	syscall
+	
+	move $a0, $t0
+	
+	li $v0, 1
+	syscall
+	
+	j fim
+negativo:
+	li $v0, 4
+	la $a0, print_n
+	syscall
+	
+	move $a0, $t0
+	
+	li $v0, 1
+	syscall
+	
+	j fim
+zero:
+	li $v0, 4
+	la $a0, print_z
+	syscall
+	
+	move $a0, $t0
+	
+	li $v0, 1
+	syscall
+	
+	j fim
+fim:
+	li $v0, 10 # Termina a execução do código
+	syscall
+	
+	
