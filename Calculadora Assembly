@@ -1,47 +1,196 @@
 .data
-num1: .word 
-mum2: .word
-
-adi:  .asciiz "\nAdi��o(A)"		
-sub:  .asciiz "\nSubra��o(S)"
-div:  .asciiz "\nDivis�o(D)"
-mul:  .asciiz "\nMultiplica��o(M)"
-pot:  .asciiz "\nPotencia��o(P)"
-
-mgs: .asciiz "\nDigite uma das siglas para escolher a opera��o"
-
-
-
+	msg: .asciiz "Escolha uma das opções \n1 - Soma\n2 - Subtração\n3 - Multiplicação\n4 - Divisão\n5 - Potênciação"
+	esc: .asciiz "\nFaça sua escolha: "
+	n1: .asciiz "Digite o 1º número: "
+	n2: .asciiz "Digite o 2º número: "
+	result: .asciiz "Esse é o resultado: "
+	erro: .asciiz "Digite um valor diferente de 0 para o Divisor."
+	con_ope: .asciiz "\nVocê quer continuar a fazer operações. \nSim digite 0  \nNão digite 1 \n--> "
+	
 .text
-.globl main
-
 main:
-	#Mostra os valores para escolha
-	la $a0, adi
 	li $v0, 4
+	la $a0, msg # Exibe as opções de contas matemáticas
 	syscall
 	
-	la $a0, sub
 	li $v0, 4
+	la $a0, esc # Mostra opção para fazer a escolha da operação
 	syscall
 	
-	la $a0, div
+	li $v0, 5
+	syscall
+	
+	move $s0, $v0
+	j case1
+		
+case1:                          # FUNÇÃO SOMA
+	addi $t0, $zero, 1
+	bne $s0, $t0, case2
+	
 	li $v0, 4
+	la $a0, n1
 	syscall
 	
-	la $a0, mul
+	li $v0, 5
+	syscall
+	
+	move $t1, $v0 # Move o valor de n1 para $t1
+	
 	li $v0, 4
+	la $a0, n2
 	syscall
 	
-	la $a0, pot
+	li $v0, 5
+	syscall
+	
+	move $t2, $v0 #Move o valor de n2 para $t2
+	
+	add $t3, $t1, $t2
+	
+	
+	j fim
+
+case2:					# FUNÇÃO SUBTRAÇÃO
+	addi $t0, $zero, 2
+	bne $s0, $t0, case3
+	
 	li $v0, 4
+	la $a0, n1
 	syscall
 	
-	la  $a0, msg
+	li $v0, 5
+	syscall
+	
+	move $t1, $v0 # Move o valor de n1 para $t1
+	
 	li $v0, 4
+	la $a0, n2
 	syscall
 	
-	
-	li $v0, 10
+	li $v0, 5
 	syscall
 	
+	move $t2, $v0 #Move o valor de n2 para $t2
+	
+	sub $t3, $t1, $t2
+	
+	
+	j fim
+	
+case3:						# FUNÇÃO MULTIPLICAÇÃO
+	addi $t0, $zero, 3	
+	bne $s0, $t0, case4  	
+	
+	li $v0, 4
+	la $a0, n1
+	syscall
+	
+	li $v0, 5
+	syscall
+	
+	move $t1, $v0 # Move o valor de n1 para $t1
+	
+	li $v0, 4
+	la $a0, n2
+	syscall
+	
+	li $v0, 5
+	syscall
+	
+	move $t2, $v0 #Move o valor de n2 para $t2
+	
+	mul $t3, $t1, $t2
+	
+	
+	j fim       
+case4:					# FUNÇÃO DIVISÃO
+	addi $t0, $zero, 4
+	bne $s0, $t0, case5
+	
+	li $v0, 4
+	la $a0, n1
+	syscall
+	
+	li $v0, 5
+	syscall
+	
+	move $t1, $v0 # Move o valor de n1 para $t1
+	
+	li $v0, 4
+	la $a0, n2
+	syscall
+	
+	li $v0, 5
+	syscall
+	
+	move $t2, $v0 #Move o valor de n2 para $t2
+	
+	beqz $t2, falha
+	
+	div $t3, $t1, $t2
+	
+	j fim
+	
+case5:					# Função Potenciação
+	
+	li $v0, 4
+	la $a0, n1
+	syscall
+	
+	li $v0, 5
+	syscall
+	
+	move $t1, $v0 # Copia o valor de n1 para $t1
+	
+	move $t3, $t1
+	
+	li $v0, 4
+	la $a0, n2
+	syscall
+	
+	li $v0, 5
+	syscall
+	
+	move $t2, $v0 #Move o valor de n2 para $t2	
+	
+	li $t0, 1
+		
+	j potencia
+	
+potencia:
+	beq $t0, $t2, fim # Sair do loop da potencia
+	
+	addi $t0, $t0, 1 # Contador
+	
+	mul $t3, $t3, $t1 # Multiplicação
+	
+	j potencia
+
+falha:
+	li $v0, 4
+	la $a0, erro
+	syscall
+	
+fim:
+
+	li $v0, 4
+	la $a0, result # Mostra o resultado da operação
+	syscall
+	
+	move $a0, $t3
+	
+	li $v0, 1
+	syscall
+	
+	li $v0, 4
+	la $a0, con_ope # Pergunta se você quer continuar a fazer operações matemátivas
+	syscall
+	
+	li $v0, 5
+	syscall
+	
+	move $t0, $v0
+	beqz $t0, main
+	
+	li $v0, 10 # Termina o código
+	syscall
